@@ -1,4 +1,4 @@
-name: Docker image | ${{ inputs.project }}
+name: Docker image | ${{ github.event.inputs.project }}
 
 on:
   workflow_dispatch:
