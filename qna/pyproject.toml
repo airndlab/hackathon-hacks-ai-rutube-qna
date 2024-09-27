@@ -1,0 +1,18 @@
+[tool.poetry]
+name = "rutube-qna"
+version = "0.1.0"
+description = "Rutube Q&A"
+license = "Apache-2.0"
+authors = ["AI RnD Lab Authors"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.11"
+fastapi = "^0.115.0"
+uvicorn = "^0.30.6"
+requests = "^2.32.3"
+aiohttp = "^3.10.6"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
