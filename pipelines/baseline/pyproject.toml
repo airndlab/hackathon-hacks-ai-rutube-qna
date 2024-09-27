@@ -1,0 +1,19 @@
+[tool.poetry]
+name = "rutube-qna-pipeline-baseline"
+version = "0.1.0"
+description = "Rutube Q&A Pipeline Baseline"
+license = "Apache-2.0"
+authors = ["AI RnD Lab Authors"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.10"
+fastapi = "^0.115.0"
+uvicorn = "^0.30.6"
+sentence-transformers = "^3.1.1"
+pandas = "^2.2.3"
+openpyxl = "^3.1.5"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
