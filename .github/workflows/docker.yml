@@ -4,16 +4,26 @@ on:
   workflow_dispatch:
     inputs:
       project:
-        description: 'Project path'
+        description: 'Project name'
         required: true
         type: choice
         options:
           - bot
           - qna
-          - pipelines/baseline
+          - pipeline-baseline
   release:
     types:
       - created
+
+env:
+  PATH_MAP: |
+    bot=bot
+    qna=qna
+    pipeline-baseline=pipelines/baseline
+  IMAGE_MAP: |
+    bot=rutube-qna-bot
+    qna=rutube-qna
+    pipeline-baseline=rutube-qna-pipeline-baseline
 
 jobs:
   build:
@@ -29,6 +39,28 @@ jobs:
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
 
+      - name: Set path and image name based on project
+        id: set_vars
+        run: |
+          PROJECT="${{ github.event.inputs.project }}"
+          
+          IFS=$'\n'
+          for entry in $PATH_MAP; do
+            KEY="${entry%%=*}"
+            VALUE="${entry#*=}"
+            if [ "$KEY" == "$PROJECT" ]; then
+              echo "path=$VALUE" >> $GITHUB_ENV
+            fi
+          done
+          
+          for entry in $IMAGE_MAP; do
+            KEY="${entry%%=*}"
+            VALUE="${entry#*=}"
+            if [ "$KEY" == "$PROJECT" ]; then
+              echo "image_name=$VALUE" >> $GITHUB_ENV
+            fi
+          done
+
       - name: Generate date tag
         id: date_tag
         run: |
@@ -38,7 +70,7 @@ jobs:
         id: meta
         uses: docker/metadata-action@v5
         with:
-          images: airndlab/${{ inputs.project }}
+          images: airndlab/${{ env.image_name }}
           tags: |
             type=raw,value=${{ steps.date_tag.outputs.tag }}
 
@@ -51,7 +83,7 @@ jobs:
       - name: Build and push to Docker Hub
         uses: docker/build-push-action@v5
         with:
-          context: ${{ github.workspace }}/${{ inputs.project }}
+          context: ${{ github.workspace }}/${{ env.path }}
           push: true
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
