@@ -1,7 +1,28 @@
-name: appName-compose
+name: rutube-qna
 
 services:
-  appName:
-    image: airndlab/appName:0.1.0
+  pipeline-baseline:
+    image: airndlab/rutube-qna-pipeline-baseline:2024.09.27-22-20
     ports:
-      - 8081:8080
+      - 8088:8080
+    volumes:
+      - ./data:/data
+    environment:
+      - KNOWLEDGE_BASE_FILE_PATH=/data/knowledge_base.xlsx
+
+  qna-service:
+    image: airndlab/rutube-qna:2024.09.27-21-57
+    ports:
+      - 8080:8080
+    depends_on:
+      - pipeline-baseline
+    environment:
+      - PIPELINE_BASELINE_SERVICE_URL=http://pipeline-baseline:8080
+
+  bot:
+    image: airndlab/rutube-qna-bot:2024.09.27-21-55
+    depends_on:
+      - qna-service
+    environment:
+      - BOT_TOKEN=your_bot_token
+      - QNA_SERVICE_URL=http://qna-service:8080
