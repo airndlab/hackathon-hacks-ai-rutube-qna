@@ -85,5 +85,5 @@ jobs:
         with:
           context: ${{ github.workspace }}/${{ env.path }}
           push: true
-          tags: airndlab/${{ env.image_name }}:${{ steps.date_tag.outputs.tag }}
+          tags: airndlab/${{ env.image_name }}:${{ env.tag }}
 #          labels: ${{ steps.meta.outputs.labels }}
