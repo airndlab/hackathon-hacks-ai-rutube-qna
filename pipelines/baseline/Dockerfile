@@ -1,6 +1,6 @@
-FROM python:3.10-alpine as requirements-stage
+FROM nvidia/cuda:12.2.0-cudnn8-runtime-ubuntu22.04 as requirements-stage
 
-RUN apk add --no-cache gcc musl-dev libffi-dev
+RUN apt-get update && apt-get install -y python3.10 python3-pip gcc g++ libffi-dev && apt-get clean
 
 WORKDIR /tmp
 
@@ -10,9 +10,9 @@ COPY ./pyproject.toml ./poetry.lock* /tmp/
 
 RUN poetry export -f requirements.txt --output requirements.txt --without-hashes
 
-FROM python:3.10-alpine
+FROM nvidia/cuda:12.2.0-cudnn8-runtime-ubuntu22.04
 
-RUN apk add --no-cache libstdc++ libffi
+RUN apt-get update && apt-get install -y python3.10 python3-pip libstdc++6 libffi7 && apt-get clean
 
 WORKDIR /code
 
