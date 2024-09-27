@@ -1,4 +1,4 @@
-FROM nvidia/cuda:12.2.0-cudnn8-runtime-ubuntu22.04 as requirements-stage
+FROM nvidia/cuda:12.2.2-cudnn8-runtime-ubuntu22.04 as requirements-stage
 
 RUN apt-get update && apt-get install -y python3.10 python3-pip gcc g++ libffi-dev && apt-get clean
 
@@ -10,7 +10,7 @@ COPY ./pyproject.toml ./poetry.lock* /tmp/
 
 RUN poetry export -f requirements.txt --output requirements.txt --without-hashes
 
-FROM nvidia/cuda:12.2.0-cudnn8-runtime-ubuntu22.04
+FROM nvidia/cuda:12.2.2-cudnn8-runtime-ubuntu22.04
 
 RUN apt-get update && apt-get install -y python3.10 python3-pip libstdc++6 libffi7 && apt-get clean
 
