@@ -23,6 +23,8 @@ const questions = new SharedArray('questions', function () {
     return open('questions.txt').split('\n').filter(q => q.trim() !== '');
 });
 
+const server_ip = '95.174.94.144'
+
 export let options = {
     stages: [
         { duration: '1m', target: 10 }, // Ramp-up to 10 RPS over 1 minute
@@ -31,7 +33,7 @@ export let options = {
     ],
 };
 export default function () {
-    const url = 'http://84.201.168.132:8080/api/answers'; // Replace with your actual endpoint
+    const url = 'http://' + server_ip + ':8080/api/answers'; // Replace with your actual endpoint
     // Pick a random question from the list
     const question = questions[Math.floor(Math.random() * questions.length)];
 
