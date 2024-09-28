@@ -9,8 +9,8 @@ from aiogram.enums import ParseMode
 from aiogram.filters import CommandStart, Command
 from aiogram.types import Message
 
-from settings import init_db, set_pipeline, get_pipeline_or_default
 from qna import get_answer, Answer, pipelines, default_pipeline
+from settings import init_db, set_pipeline, get_pipeline_or_default
 
 logging.basicConfig(
     level=logging.INFO,
@@ -20,17 +20,17 @@ logging.basicConfig(
     ]
 )
 
+BOT_WELCOME_FILE_PATH = os.getenv('BOT_WELCOME_FILE_PATH',
+                                  'C:/Users/grig/github/airndlab/hackathon-hacks-ai-rutube-qna/config/bot-welcome.txt')
+with open(BOT_WELCOME_FILE_PATH, 'r', encoding='utf-8') as file:
+    bot_welcome_text = file.read().strip()
+
 dp = Dispatcher()
 
 
 @dp.message(CommandStart())
 async def command_start_handler(message: Message) -> None:
-    text = (
-        f'Здравствуйте, {message.from_user.full_name}!\n'
-        f'Я интеллектуальный помощник Rutube.\n'
-        f'Готов ответить на Ваши вопросы.'
-    )
-    await message.reply(text)
+    await message.reply(bot_welcome_text)
 
 
 async def get_pipelines_text():

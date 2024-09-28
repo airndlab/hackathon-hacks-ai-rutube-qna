@@ -46,6 +46,9 @@ services:
     image: airndlab/rutube-qna-bot:2024.09.28-13-10
     depends_on:
       - qna-service
+    volumes:
+      - ./config:/config
     environment:
       - BOT_TOKEN=${BOT_TOKEN}
+      - BOT_WELCOME_FILE_PATH=/config/bot-welcome.txt
       - QNA_SERVICE_URL=http://qna-service:8080
