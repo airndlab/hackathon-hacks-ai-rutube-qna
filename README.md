@@ -15,11 +15,25 @@ Rutube Q&A.
 - python
 - poetry
 
-## Запуск
+## Сборка
+
+> Настроена сборка через
+> [GitHub Actions](https://github.com/airndlab/hackathon-hacks-ai-rutube-qna/actions/workflows/docker.yml).
 
 Установить:
 
 - docker
+
+Перейти в нужный подпроект и запустить:
+
+```
+docker build -t <название вашего образа>:<тег вашего образа> .
+```
+
+## Запуск
+
+Установить:
+
 - docker compose
 
 Создать `.env`:
