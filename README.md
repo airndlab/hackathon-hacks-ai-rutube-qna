@@ -16,6 +16,7 @@
     - [pipeline-baseline](pipelines/baseline) - Пайплайн кейсхолдеров
 - [Данные](data)
 - [Конфигурация](config)
+- [Нагрузочное тестирование](tests/readme.md)
 
 ## Разработка
 
