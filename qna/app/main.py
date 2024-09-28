@@ -27,9 +27,7 @@ from app.service import get_answer
 logging.basicConfig(
     level=logging.INFO,
     format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
-    handlers=[
-        logging.StreamHandler(sys.stdout)
-    ]
+    handlers=[logging.StreamHandler(sys.stdout)]
 )
 
 app = FastAPI()
@@ -55,14 +53,12 @@ class Answer(BaseModel):
 
 @app.post("/api/answers", response_model=Answer)
 async def ask(request: QuestionRequest) -> Answer:
-    question = request.question
-    pipeline = request.pipeline
-    answer_data = await get_answer(question, pipeline)
+    answer_data = await get_answer(request.question, request.pipeline)
     answer_id = str(uuid.uuid4())
     await save_answer(
         answer_id=answer_id,
-        question=question,
-        pipeline=pipeline,
+        question=request.question,
+        pipeline=request.pipeline,
         answer=answer_data.answer,
         class_1=answer_data.class_1,
         class_2=answer_data.class_2,

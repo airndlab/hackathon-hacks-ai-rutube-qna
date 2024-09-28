@@ -18,15 +18,12 @@ from typing import Optional, Dict
 import aiohttp
 from pydantic import BaseModel
 
-PIPELINE_BASELINE_SERVICE_URL = os.getenv('PIPELINE_BASELINE_SERVICE_URL', 'http://pipeline-baseline:8088')
-PIPELINE_FAQ_SERVICE_URL = os.getenv('PIPELINE_FAQ_SERVICE_URL', 'http://pipeline-faq:8088')
-PIPELINE_FAQ_CASES_SERVICE_URL = os.getenv('PIPELINE_FAQ_CASES_SERVICE_URL', 'http://pipeline-faq-cases:8088')
+QNA_SERVICE_DEFAULT_PIPELINE = os.getenv('QNA_SERVICE_DEFAULT_PIPELINE', 'faq_cases')
 
-default_pipeline = os.getenv('QNA_SERVICE_DEFAULT_PIPELINE', 'faq_cases')
-pipelines = {
-    "baseline": "Вариант кейсхолдера",
-    "faq": "Поиск по вопросам FAQ",
-    "faq_cases": "Поиск по вопросам FAQ+Кейсы"
+SERVICE_URLS = {
+    "baseline": os.getenv('PIPELINE_BASELINE_SERVICE_URL', 'http://pipeline-baseline:8088'),
+    "faq": os.getenv('PIPELINE_FAQ_SERVICE_URL', 'http://pipeline-faq:8088'),
+    "faq_cases": os.getenv('PIPELINE_FAQ_CASES_SERVICE_URL', 'http://pipeline-faq-cases:8088'),
 }
 
 
@@ -37,25 +34,21 @@ class PipelineAnswer(BaseModel):
     extra_fields: Optional[Dict[str, str]] = None
 
 
-async def get_answer(question: str, pipeline: Optional[str]) -> PipelineAnswer:
-    pipeline = pipeline or default_pipeline
-    match pipeline:
-        case "baseline":
-            return await get_answer_by_service(question, PIPELINE_BASELINE_SERVICE_URL)
-        case "faq":
-            return await get_answer_by_service(question, PIPELINE_FAQ_SERVICE_URL)
-        case "faq_cases":
-            return await get_answer_by_service(question, PIPELINE_FAQ_CASES_SERVICE_URL)
-        case _:
-            raise Exception(f'Неизвестный пайплайн: {pipeline}')
+# Получить ответ у пайплайна
+async def get_answer(question: str, pipeline: Optional[str] = None) -> PipelineAnswer:
+    pipeline = pipeline or QNA_SERVICE_DEFAULT_PIPELINE
+    if pipeline not in SERVICE_URLS:
+        raise ValueError(f'Неизвестный пайплайн: {pipeline}')
+
+    service_url = SERVICE_URLS[pipeline]
+    return await get_answer_by_service(question, service_url)
 
 
+# Запросить ответ у пайплайн сервиса
 async def get_answer_by_service(question: str, service_url: str) -> PipelineAnswer:
     async with aiohttp.ClientSession() as session:
         request = {'question': question}
         async with session.post(f'{service_url}/api/answers', json=request) as response:
-            if response.status == 200:
-                json = await response.json()
-                return PipelineAnswer(**json)
-            else:
-                raise Exception(f"Ошибка получения ответа: {response.status} {response.text()}")
+            if response.status != 200:
+                raise Exception(f"Ошибка получения ответа: {response.status} {await response.text()}")
+            return PipelineAnswer(**await response.json())
