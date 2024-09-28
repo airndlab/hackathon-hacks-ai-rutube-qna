@@ -6,7 +6,16 @@
 [![Docker Image Version (latest semver)](https://img.shields.io/docker/v/airndlab/rutube-qna-pipeline-faq-cases?label=rutube-qna-pipeline-faq-cases)](https://hub.docker.com/r/airndlab/rutube-qna-pipeline-faq-cases)
 [![Docker Image Version (latest semver)](https://img.shields.io/docker/v/airndlab/rutube-qna-pipeline-baseline?label=rutube-qna-pipeline-baseline)](https://hub.docker.com/r/airndlab/rutube-qna-pipeline-baseline)
 
-Rutube Q&A.
+Состав проекта:
+
+- [bot](bot) - Telegram бот
+- [qna-service](qna) - Сервис ответов на вопросы
+- Пайплайны:
+    - [pipeline-faq](pipelines/faq) - Пайплайн поиска по вопросам FAQ
+    - [pipeline-faq-cases](pipelines/faq_cases) - Пайплайн поиска по вопросам FAQ + Кейсам
+    - [pipeline-baseline](pipelines/baseline) - Пайплайн кейсхолдеров
+- [Данные](data)
+- [Конфигурация](config)
 
 ## Разработка
 
@@ -29,6 +38,10 @@ Rutube Q&A.
 ```
 docker build -t <название вашего образа>:<тег вашего образа> .
 ```
+
+## Конфигурация
+
+- [bot-messages.yml](config/bot-messages.yml) - настройка текста для сообщения бота
 
 ## Запуск
 
