@@ -2,7 +2,7 @@ name: rutube-qna
 
 services:
   pipeline-faq:
-    image: airndlab/rutube-qna-pipeline-faq:2024.09.28-09-58
+    image: airndlab/rutube-qna-pipeline-faq:2024.09.28-12-32
     ports:
       - 8081:8080
     volumes:
@@ -11,7 +11,7 @@ services:
       - KNOWLEDGE_BASE_FILE_PATH=/data/knowledge_base.xlsx
 
   pipeline-faq-cases:
-    image: airndlab/rutube-qna-pipeline-faq-cases:2024.09.28-10-22
+    image: airndlab/rutube-qna-pipeline-faq-cases:2024.09.28-12-38
     ports:
       - 8082:8080
     volumes:
