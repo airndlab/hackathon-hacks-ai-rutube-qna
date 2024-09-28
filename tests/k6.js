@@ -17,6 +17,8 @@
 import http from 'k6/http';
 import { check, sleep } from 'k6';
 import { SharedArray } from 'k6/data';
+import { htmlReport } from "https://raw.githubusercontent.com/benc-uk/k6-reporter/main/dist/bundle.js";
+
 
 // Load questions from the file
 const questions = new SharedArray('questions', function () {
@@ -25,13 +27,20 @@ const questions = new SharedArray('questions', function () {
 
 const server_ip = '95.174.94.144'
 
+export function handleSummary(data) {
+    return {
+        "summary.html": htmlReport(data),
+    };
+}
+
 export let options = {
     stages: [
         { duration: '1m', target: 10 }, // Ramp-up to 10 RPS over 1 minute
-        { duration: '5m', target: 50 }, // Stay at 10 RPS for 5 minutes
+        { duration: '1m', target: 50 }, // Stay at 10 RPS for 5 minutes
         { duration: '1m', target: 0 },  // Ramp-down to 0 RPS
     ],
 };
+
 export default function () {
     const url = 'http://' + server_ip + ':8080/api/answers'; // Replace with your actual endpoint
     // Pick a random question from the list
