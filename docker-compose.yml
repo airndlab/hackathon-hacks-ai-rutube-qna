@@ -41,7 +41,10 @@ services:
       - pipeline-faq
       - pipeline-faq-cases
       - pipeline-baseline
+    volumes:
+      - qna_data:/data
     environment:
+      - QNA_DB_PATH=/data/metrics.db
       - PIPELINE_BASELINE_SERVICE_URL=http://pipeline-baseline:8080
       - PIPELINE_FAQ_SERVICE_URL=http://pipeline-faq:8080
       - PIPELINE_FAQ_CASES_SERVICE_URL=http://pipeline-faq-cases:8080
@@ -52,7 +55,13 @@ services:
       - qna-service
     volumes:
       - ./config:/config
+      - bot_data:/data
     environment:
       - BOT_TOKEN=${BOT_TOKEN}
+      - BOT_DB_PATH=/data/settings.db
       - BOT_MESSAGES_FILE_PATH=/config/bot-messages.yml
       - QNA_SERVICE_URL=http://qna-service:8080
+
+volumes:
+  bot_data:
+  qna_data:
