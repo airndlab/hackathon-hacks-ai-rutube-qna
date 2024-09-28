@@ -9,7 +9,7 @@ from aiogram.enums import ParseMode
 from aiogram.filters import CommandStart, Command
 from aiogram.types import Message
 
-from app.settings import init_db, set_pipeline, get_pipeline_or_default
+from settings import init_db, set_pipeline, get_pipeline_or_default
 from qna import get_answer, Answer, pipelines, default_pipeline
 
 logging.basicConfig(

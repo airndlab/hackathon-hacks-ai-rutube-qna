@@ -1,6 +1,6 @@
 import aiosqlite
 
-from app.qna import default_pipeline
+from qna import default_pipeline
 
 db_path = 'settings.db'
 
