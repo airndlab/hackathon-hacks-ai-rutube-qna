@@ -9,8 +9,8 @@ from aiogram.enums import ParseMode
 from aiogram.filters import CommandStart, Command
 from aiogram.types import Message
 
-from qna import get_answer, Answer, pipelines, default_pipeline
-from settings import init_db, set_pipeline, get_pipeline_or_default
+from qna import get_answer, Answer
+from settings import init_db, set_pipeline, get_pipeline_or_default, get_verbose_or_default, pipelines, set_verbose
 
 logging.basicConfig(
     level=logging.INFO,
@@ -48,10 +48,10 @@ async def command_pipelines_handler(message: Message):
 
 
 @dp.message(Command('pipeline'))
-async def command_pipelines_handler(message: Message):
+async def command_pipeline_handler(message: Message):
     args = message.text.split()
     if len(args) != 2:
-        text = f"Пожалуйста, укажите название пайплайна.\n\nПример: /pipeline {default_pipeline}"
+        text = f"Пожалуйста, укажите название пайплайна."
         await message.reply(text)
         return
     pipeline_name = args[1]
@@ -63,8 +63,28 @@ async def command_pipelines_handler(message: Message):
     await message.answer(response)
 
 
-def get_answer_text(response: Answer) -> str:
-    return f'{response.answer}\n\nКлассификатор 1: {response.class_1}\nКлассификатор 2: {response.class_2}'
+@dp.message(Command('enable_verbose'))
+async def command_enable_verbose_handler(message: Message):
+    await set_verbose(message.chat.id, True)
+    await message.answer('Подробный режим: Включен')
+
+
+@dp.message(Command('disable_verbose'))
+async def command_disable_verbose_handler(message: Message):
+    await set_verbose(message.chat.id, False)
+    await message.answer('Подробный режим: Выключен')
+
+
+def get_answer_text(response: Answer, verbose: bool) -> str:
+    text = f'<code>{response.answer}</code>' \
+           f'\n' \
+           f'\n<i>Классификатор 1:</i> <code>{response.class_1}</code>' \
+           f'\n<i>Классификатор 2:</i> <code>{response.class_2}</code>'
+    if verbose:
+        other_text = response.get_other_inline()
+        if other_text:
+            text += f'\n\n{other_text}'
+    return text
 
 
 @dp.message()
@@ -73,7 +93,8 @@ async def question_handler(message: Message) -> None:
         question = message.text
         pipeline = await get_pipeline_or_default(message.chat.id)
         answer = await get_answer(question, pipeline)
-        text = get_answer_text(answer)
+        verbose = await get_verbose_or_default(message.chat.id)
+        text = get_answer_text(answer, verbose)
         await message.reply(text)
     except Exception as e:
         await message.reply(f'Ой! Произошла непредвиденная ошибка, нам очень жаль...\n\n{e}')

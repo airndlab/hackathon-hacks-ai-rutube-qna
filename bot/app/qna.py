@@ -1,23 +1,21 @@
 import os
-from typing import Optional
+from typing import Optional, Dict
 
-import aiohttp
 from pydantic import BaseModel
 
 QNA_SERVICE_URL = os.getenv('QNA_SERVICE_URL', 'http://qna-service:8080')
-
-default_pipeline = 'baseline'
-pipelines = {
-    "baseline": "Вариант кейсхолдера",
-    "faq": "Поиск по вопросам FAQ",
-    "faq_cases": "Поиск по вопросам FAQ+Кейсы"
-}
 
 
 class Answer(BaseModel):
     answer: str
     class_1: str
     class_2: str
+    extra_fields: Optional[Dict[str, str]] = None
+
+    def get_other_inline(self) -> Optional[str]:
+        if self.extra_fields:
+            return ' '.join(f'{k} {v}' for k, v in self.extra_fields.items())
+        return None
 
 
 async def get_answer(question: str, pipeline: Optional[str] = None) -> Answer:
