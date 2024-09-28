@@ -7,8 +7,10 @@ services:
       - 8081:8080
     volumes:
       - ./data:/data
+      - ./config:/config
     environment:
       - KNOWLEDGE_BASE_FILE_PATH=/data/knowledge_base.xlsx
+      - REPLACEMENTS_FILE_PATH=/config/replacements.json
 
   pipeline-faq-cases:
     image: airndlab/rutube-qna-pipeline-faq-cases:2024.09.28-12-38
@@ -16,9 +18,11 @@ services:
       - 8082:8080
     volumes:
       - ./data:/data
+      - ./config:/config
     environment:
       - KNOWLEDGE_BASE_FILE_PATH=/data/knowledge_base.xlsx
       - CASES_FILE_PATH=/data/cases.xlsx
+      - REPLACEMENTS_FILE_PATH=/config/replacements.json
 
   pipeline-baseline:
     image: airndlab/rutube-qna-pipeline-baseline:2024.09.27-22-20
