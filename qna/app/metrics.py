@@ -9,6 +9,7 @@ async def init_db() -> None:
         CREATE TABLE IF NOT EXISTS answers (
             answer_id TEXT PRIMARY KEY,
             question TEXT,
+            pipeline TEXT,
             answer TEXT,
             class_1 TEXT,
             class_2 TEXT,
@@ -19,11 +20,18 @@ async def init_db() -> None:
         await db.commit()
 
 
-async def save_answer(answer_id: str, question: str, answer: str, class_1: str, class_2: str) -> None:
+async def save_answer(
+        answer_id: str,
+        question: str,
+        pipeline: str,
+        answer: str,
+        class_1: str,
+        class_2: str,
+) -> None:
     async with aiosqlite.connect(db_path) as db:
         await db.execute(
-            "INSERT INTO answers (answer_id, question, answer, class_1, class_2) VALUES (?, ?, ?, ?, ?)",
-            (answer_id, question, answer, class_1, class_2)
+            "INSERT INTO answers (answer_id, question, pipeline, answer, class_1, class_2) VALUES (?, ?, ?, ?, ?, ?)",
+            (answer_id, question, pipeline, answer, class_1, class_2)
         )
         await db.commit()
 

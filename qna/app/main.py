@@ -48,6 +48,7 @@ async def ask(request: QuestionRequest) -> Answer:
     await save_answer(
         answer_id=answer_id,
         question=question,
+        pipeline=pipeline,
         answer=answer_data.answer,
         class_1=answer_data.class_1,
         class_2=answer_data.class_2,
