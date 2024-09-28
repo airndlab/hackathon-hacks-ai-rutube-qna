@@ -1,4 +1,5 @@
 import logging
+from typing import Optional
 
 import sys
 import uvicorn
@@ -25,12 +26,14 @@ async def root():
 
 class QuestionRequest(BaseModel):
     question: str
+    pipeline: Optional[str] = None
 
 
 @app.post("/api/answers", response_model=Answer)
 async def ask(request: QuestionRequest) -> Answer:
     question = request.question
-    return await get_answer(question)
+    pipeline = request.pipeline
+    return await get_answer(question, pipeline)
 
 
 if __name__ == "__main__":

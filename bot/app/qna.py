@@ -1,9 +1,17 @@
 import os
+from typing import Optional
 
 import aiohttp
 from pydantic import BaseModel
 
 QNA_SERVICE_URL = os.getenv('QNA_SERVICE_URL', 'http://qna-service:8080')
+
+default_pipeline = 'baseline'
+pipelines = {
+    "baseline": "Вариант кейсхолдера",
+    "faq": "Поиск по вопросам FAQ",
+    "faq_cases": "Поиск по вопросам FAQ+Кейсы"
+}
 
 
 class Answer(BaseModel):
@@ -12,11 +20,12 @@ class Answer(BaseModel):
     class_2: str
 
 
-async def get_answer(question: str) -> Answer:
+async def get_answer(question: str, pipeline: Optional[str] = None) -> Answer:
     async with aiohttp.ClientSession() as session:
-        async with session.post(f'{QNA_SERVICE_URL}/api/answers', json={
-            'question': question
-        }) as response:
+        request = {'question': question}
+        if pipeline:
+            request['pipeline'] = pipeline
+        async with session.post(f'{QNA_SERVICE_URL}/api/answers', json=request) as response:
             if response.status == 200:
                 json = await response.json()
                 return Answer(**json)
