@@ -1,0 +1,21 @@
+[tool.poetry]
+name = "rutube-qna-pipeline-faq"
+version = "0.1.0"
+description = "Rutube Q&A Pipeline FAQ"
+license = "Apache-2.0"
+authors = ["AI RnD Lab Authors"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.11"
+fastapi = "^0.115.0"
+uvicorn = "^0.30.6"
+haystack-ai = "^2.5.1"
+datasets = ">=2.6.1"
+sentence-transformers = ">=3.0.0"
+pymorphy2 = "^0.9.1"
+openpyxl = "^3.1.5"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
