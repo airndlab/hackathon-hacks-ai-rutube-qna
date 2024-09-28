@@ -3,13 +3,14 @@ import logging
 import os
 
 import sys
+import yaml
 from aiogram import Bot, Dispatcher
 from aiogram.client.default import DefaultBotProperties
 from aiogram.enums import ParseMode
 from aiogram.filters import CommandStart, Command
-from aiogram.types import Message
+from aiogram.types import Message, InlineKeyboardButton, InlineKeyboardMarkup, CallbackQuery
 
-from qna import get_answer, Answer
+from qna import get_answer, Answer, like_answer, dislike_answer
 from settings import init_db, set_pipeline, get_pipeline_or_default, get_verbose_or_default, pipelines, set_verbose
 
 logging.basicConfig(
@@ -20,17 +21,17 @@ logging.basicConfig(
     ]
 )
 
-BOT_WELCOME_FILE_PATH = os.getenv('BOT_WELCOME_FILE_PATH',
-                                  'C:/Users/grig/github/airndlab/hackathon-hacks-ai-rutube-qna/config/bot-welcome.txt')
-with open(BOT_WELCOME_FILE_PATH, 'r', encoding='utf-8') as file:
-    bot_welcome_text = file.read().strip()
+BOT_MESSAGES_FILE_PATH = os.getenv('BOT_MESSAGES_FILE_PATH',
+                                   'C:/Users/grig/github/airndlab/hackathon-hacks-ai-rutube-qna/config/bot-messages.yml')
+with open(BOT_MESSAGES_FILE_PATH, 'r', encoding='utf-8') as file:
+    messages = yaml.safe_load(file)
 
 dp = Dispatcher()
 
 
 @dp.message(CommandStart())
 async def command_start_handler(message: Message) -> None:
-    await message.reply(bot_welcome_text)
+    await message.reply(messages['start'])
 
 
 async def get_pipelines_text():
@@ -76,14 +77,17 @@ async def command_disable_verbose_handler(message: Message):
 
 
 def get_answer_text(response: Answer, verbose: bool) -> str:
-    text = f'<code>{response.answer}</code>' \
-           f'\n' \
-           f'\n<i>Классификатор 1:</i> <code>{response.class_1}</code>' \
-           f'\n<i>Классификатор 2:</i> <code>{response.class_2}</code>'
+    other_text = ''
     if verbose:
-        other_text = response.get_other_inline()
-        if other_text:
-            text += f'\n\n{other_text}'
+        other_inline = response.get_other_inline()
+        if other_inline:
+            other_text = other_inline
+    text = messages['answer'].format(
+        answer=response.answer,
+        class_1=response.class_1,
+        class_2=response.class_2,
+        other=other_text
+    )
     return text
 
 
@@ -95,10 +99,26 @@ async def question_handler(message: Message) -> None:
         answer = await get_answer(question, pipeline)
         verbose = await get_verbose_or_default(message.chat.id)
         text = get_answer_text(answer, verbose)
-        await message.reply(text)
+        markup = InlineKeyboardMarkup(inline_keyboard=[[
+            InlineKeyboardButton(text="👍", callback_data=f'like:{answer.id}'),
+            InlineKeyboardButton(text="👎", callback_data=f'dislike:{answer.id}')
+        ]])
+        await message.reply(text, reply_markup=markup)
     except Exception as e:
         await message.reply(f'Ой! Произошла непредвиденная ошибка, нам очень жаль...\n\n{e}')
         raise e
+
+
+@dp.callback_query(lambda query: query.data.startswith('like'))
+async def like_handler(query: CallbackQuery):
+    await like_answer(query.data.split(':')[1])
+    await query.answer(messages['like'])
+
+
+@dp.callback_query(lambda query: query.data.startswith('dislike'))
+async def like_handler(query: CallbackQuery):
+    await dislike_answer(query.data.split(':')[1])
+    await query.answer(messages['dislike'])
 
 
 async def main() -> None:

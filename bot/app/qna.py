@@ -1,12 +1,14 @@
 import os
 from typing import Optional, Dict
 
+import aiohttp
 from pydantic import BaseModel
 
 QNA_SERVICE_URL = os.getenv('QNA_SERVICE_URL', 'http://qna-service:8080')
 
 
 class Answer(BaseModel):
+    id: str
     answer: str
     class_1: str
     class_2: str
@@ -29,3 +31,19 @@ async def get_answer(question: str, pipeline: Optional[str] = None) -> Answer:
                 return Answer(**json)
             else:
                 raise Exception(f"Ошибка получения ответа: {response.status} {response.text()}")
+
+
+async def like_answer(answer_id: str) -> None:
+    async with aiohttp.ClientSession() as session:
+        async with session.post(f'{QNA_SERVICE_URL}/api/answers/{answer_id}/liking') as response:
+            if response.status != 200:
+                raise Exception(f"Ошибка положительной оценки ответа '{answer_id}'"
+                                f": {response.status} {response.text()}")
+
+
+async def dislike_answer(answer_id: str) -> None:
+    async with aiohttp.ClientSession() as session:
+        async with session.post(f'{QNA_SERVICE_URL}/api/answers/{answer_id}/disliking') as response:
+            if response.status != 200:
+                raise Exception(f"Ошибка отрицательной оценки ответа '{answer_id}'"
+                                f": {response.status} {response.text()}")

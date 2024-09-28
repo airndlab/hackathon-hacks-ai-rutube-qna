@@ -50,5 +50,5 @@ services:
       - ./config:/config
     environment:
       - BOT_TOKEN=${BOT_TOKEN}
-      - BOT_WELCOME_FILE_PATH=/config/bot-welcome.txt
+      - BOT_MESSAGES_FILE_PATH=/config/bot-messages.yml
       - QNA_SERVICE_URL=http://qna-service:8080
