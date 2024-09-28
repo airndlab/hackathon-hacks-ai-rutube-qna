@@ -35,6 +35,8 @@ logging.basicConfig(
     handlers=[logging.StreamHandler(sys.stdout)]
 )
 
+NO_ANSWER = "Ответ не найден."
+
 # Загрузка сообщений бота из файла
 BOT_MESSAGES_FILE_PATH = os.getenv('BOT_MESSAGES_FILE_PATH')
 with open(BOT_MESSAGES_FILE_PATH, 'r', encoding='utf-8') as file:
@@ -105,10 +107,13 @@ async def question_handler(message: Message) -> None:
     try:
         question = message.text
         pipeline = await get_pipeline_or_default(message.chat.id)
-        answer = await get_answer(question, pipeline)
+        answer_data = await get_answer(question, pipeline)
+        if answer_data.answer == NO_ANSWER:
+            await message.reply(bot_messages['answer-no'])
+            return
         verbose = await get_verbose_or_default(message.chat.id)
-        text = get_answer_text(answer, verbose)
-        markup = create_answer_markup(answer.id)
+        text = get_answer_text(answer_data, verbose)
+        markup = create_answer_markup(answer_data.id)
         await message.reply(text, reply_markup=markup)
     except Exception as exception:
         verbose = await get_verbose_or_default(message.chat.id)
