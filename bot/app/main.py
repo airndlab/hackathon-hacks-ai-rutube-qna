@@ -82,7 +82,7 @@ async def question_handler(message: Message) -> None:
 
 async def main() -> None:
     bot_token = os.getenv('BOT_TOKEN')
-    bot = Bot(token=bot_token, default=DefaultBotProperties(parse_mode=ParseMode.MARKDOWN))
+    bot = Bot(token=bot_token, default=DefaultBotProperties(parse_mode=ParseMode.HTML))
     await init_db()
     await dp.start_polling(bot)
 
