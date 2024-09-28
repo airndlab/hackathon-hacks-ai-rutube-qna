@@ -30,7 +30,7 @@ services:
       - KNOWLEDGE_BASE_FILE_PATH=/data/knowledge_base.xlsx
 
   qna-service:
-    image: airndlab/rutube-qna:2024.09.28-10-32
+    image: airndlab/rutube-qna:2024.09.28-17-28
     ports:
       - 8080:8080
     depends_on:
@@ -43,7 +43,7 @@ services:
       - PIPELINE_FAQ_CASES_SERVICE_URL=http://pipeline-faq-cases:8080
 
   bot:
-    image: airndlab/rutube-qna-bot:2024.09.28-13-10
+    image: airndlab/rutube-qna-bot:2024.09.28-17-28
     depends_on:
       - qna-service
     volumes:
