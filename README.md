@@ -22,6 +22,8 @@
 
 ## Разработка
 
+![Technologies](docs/images/technologies.svg)
+
 Установить:
 
 - python
