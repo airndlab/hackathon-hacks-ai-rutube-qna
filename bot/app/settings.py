@@ -16,11 +16,14 @@ import os
 
 import aiosqlite
 
-db_path = 'settings.db'
+# Путь к базе данных
+BOT_DB_PATH = os.getenv('BOT_DB_PATH', 'settings.db')
 
-default_verbose = os.getenv('BOT_DEFAULT_VERBOSE', 'false').lower() in ('true', '1', 't')
-default_pipeline = os.getenv('BOT_DEFAULT_PIPELINE', 'faq_cases')
+# Получение значений переменных окружения с установленными значениями по умолчанию
+DEFAULT_VERBOSE = os.getenv('BOT_DEFAULT_VERBOSE', 'false').lower() in ('true', '1', 't')
+DEFAULT_PIPELINE = os.getenv('BOT_DEFAULT_PIPELINE', 'faq_cases')
 
+# Словарь с возможными вариантами пайплайнов
 pipelines = {
     "baseline": "Вариант кейсхолдера",
     "faq": "Поиск по вопросам FAQ",
@@ -28,8 +31,9 @@ pipelines = {
 }
 
 
+# Инициализация базы данных
 async def init_db() -> None:
-    async with aiosqlite.connect(db_path) as db:
+    async with aiosqlite.connect(BOT_DB_PATH) as db:
         await db.execute('''
         CREATE TABLE IF NOT EXISTS chats (
             chat_id INTEGER,
@@ -41,19 +45,22 @@ async def init_db() -> None:
         await db.commit()
 
 
+# Получения пайплайна
 async def get_pipeline(chat_id: int) -> str:
-    async with aiosqlite.connect(db_path) as db:
+    async with aiosqlite.connect(BOT_DB_PATH) as db:
         cursor = await db.execute("SELECT pipeline FROM chats WHERE chat_id = ?", (chat_id,))
         row = await cursor.fetchone()
         return row[0] if row else None
 
 
+# Получения пайплайна или значения по умолчанию
 async def get_pipeline_or_default(chat_id: int) -> str:
-    return await get_pipeline(chat_id) or default_pipeline
+    return await get_pipeline(chat_id) or DEFAULT_PIPELINE
 
 
+# Установки пайплайна
 async def set_pipeline(chat_id: int, pipeline: str) -> None:
-    async with aiosqlite.connect(db_path) as db:
+    async with aiosqlite.connect(BOT_DB_PATH) as db:
         await db.execute(
             "INSERT OR REPLACE INTO chats (chat_id, pipeline) VALUES (?, ?)",
             (chat_id, pipeline)
@@ -61,19 +68,22 @@ async def set_pipeline(chat_id: int, pipeline: str) -> None:
         await db.commit()
 
 
+# Получение значения verbose
 async def get_verbose(chat_id: int) -> bool:
-    async with aiosqlite.connect(db_path) as db:
+    async with aiosqlite.connect(BOT_DB_PATH) as db:
         cursor = await db.execute("SELECT verbose FROM chats WHERE chat_id = ?", (chat_id,))
         row = await cursor.fetchone()
         return row[0] if row else None
 
 
+# Получение значения verbose или значения по умолчанию
 async def get_verbose_or_default(chat_id: int) -> bool:
-    return await get_verbose(chat_id) or default_verbose
+    return await get_verbose(chat_id) or DEFAULT_VERBOSE
 
 
+# Установка значения verbose
 async def set_verbose(chat_id: int, verbose: bool) -> None:
-    async with aiosqlite.connect(db_path) as db:
+    async with aiosqlite.connect(BOT_DB_PATH) as db:
         await db.execute(
             "INSERT OR REPLACE INTO chats (chat_id, verbose) VALUES (?, ?)",
             (chat_id, verbose)

@@ -25,39 +25,50 @@ from aiogram.filters import CommandStart, Command
 from aiogram.types import Message, InlineKeyboardButton, InlineKeyboardMarkup, CallbackQuery
 
 from qna import get_answer, Answer, like_answer, dislike_answer
-from settings import init_db, get_pipeline_or_default, get_verbose_or_default, pipelines, set_verbose, set_pipeline
+from settings import (init_db, get_pipeline_or_default, get_verbose_or_default,
+                      pipelines, set_verbose, set_pipeline)
 
+# Настройка логирования
 logging.basicConfig(
     level=logging.INFO,
     format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
-    handlers=[
-        logging.StreamHandler(sys.stdout)
-    ]
+    handlers=[logging.StreamHandler(sys.stdout)]
 )
 
+# Загрузка сообщений бота из файла
 BOT_MESSAGES_FILE_PATH = os.getenv('BOT_MESSAGES_FILE_PATH')
 with open(BOT_MESSAGES_FILE_PATH, 'r', encoding='utf-8') as file:
     bot_messages = yaml.safe_load(file)
 
+# Инициализация диспетчера
 dp = Dispatcher()
 
 
+# Команда /start для приветствия
 @dp.message(CommandStart())
 async def command_start_handler(message: Message) -> None:
     await message.reply(bot_messages['start'])
 
 
+# Команда /pipelines для выбора пайплайна
 @dp.message(Command('pipelines'))
 async def command_pipelines_handler(message: Message):
     current_pipeline = await get_pipeline_or_default(message.chat.id)
     text = bot_messages['pipelines'].format(pipeline=pipelines[current_pipeline])
-    markup = InlineKeyboardMarkup(inline_keyboard=[
-        [InlineKeyboardButton(text=name, callback_data=f'pipeline:{key}')]
-        for key, name in pipelines.items()
-    ])
+    markup = create_pipeline_markup()
     await message.reply(text, reply_markup=markup)
 
 
+# Команда /verbose для включения/выключения подробного режима
+@dp.message(Command('verbose'))
+async def command_verbose_handler(message: Message):
+    verbose = await get_verbose_or_default(message.chat.id)
+    text = bot_messages['verbose'].format(status=get_verbose_status(verbose))
+    markup = create_verbose_markup()
+    await message.reply(text, reply_markup=markup)
+
+
+# Обработчик выбранного пайплайна
 @dp.callback_query(lambda query: query.data.startswith('pipeline:'))
 async def pipeline_handler(query: CallbackQuery):
     pipeline_name = query.data.split(':')[1]
@@ -65,48 +76,30 @@ async def pipeline_handler(query: CallbackQuery):
     await query.answer(bot_messages['pipeline'].format(pipeline=pipelines[pipeline_name]))
 
 
-@dp.message(Command('verbose'))
-async def command_verbose_handler(message: Message):
-    verbose = await get_verbose_or_default(message.chat.id)
-    text = bot_messages['verbose'].format(status=get_verbose_status(verbose))
-    markup = InlineKeyboardMarkup(inline_keyboard=[[
-        InlineKeyboardButton(text="✅", callback_data=f'verbose:true'),
-        InlineKeyboardButton(text="❌", callback_data=f'verbose:false'),
-    ]])
-    await message.reply(text, reply_markup=markup)
-
-
-def get_verbose_status(verbose):
-    verbose_status = bot_messages['verbose-enabled'] if verbose else bot_messages['verbose-disabled']
-    return verbose_status
-
-
+# Обработчик выбранного включения/выключения подробного режима
 @dp.callback_query(lambda query: query.data.startswith('verbose:'))
-async def pipeline_handler(query: CallbackQuery):
-    verbose_value = query.data.split(':')[1]
-    verbose = verbose_value.lower() == 'true'
-    await set_verbose(query.message.chat.id, verbose)
-    verbose_status = get_verbose_status(verbose)
+async def verbose_handler(query: CallbackQuery):
+    verbose_value = query.data.split(':')[1].lower() == 'true'
+    await set_verbose(query.message.chat.id, verbose_value)
+    verbose_status = get_verbose_status(verbose_value)
     await query.answer(bot_messages['verbose-select'].format(status=verbose_status))
 
 
-def get_answer_text(response: Answer, verbose: bool) -> str:
-    assurance_text = bot_messages['answer-confident'] if True else bot_messages['answer-doubtful']
-    other_text = ''
-    if verbose:
-        other_inline = response.get_other_inline()
-        if other_inline:
-            other_text = other_inline
-    text = bot_messages['answer'].format(
-        answer=response.answer,
-        class_1=response.class_1,
-        class_2=response.class_2,
-        assurance=assurance_text,
-        other=other_text
-    )
-    return text
+# Обработчик лайка
+@dp.callback_query(lambda query: query.data.startswith('like:'))
+async def like_handler(query: CallbackQuery):
+    await like_answer(query.data.split(':')[1])
+    await query.answer(bot_messages['like'])
 
 
+# Обработчик дизлайка
+@dp.callback_query(lambda query: query.data.startswith('dislike:'))
+async def dislike_handler(query: CallbackQuery):
+    await dislike_answer(query.data.split(':')[1])
+    await query.answer(bot_messages['dislike'])
+
+
+# Обработчик вопросов
 @dp.message()
 async def question_handler(message: Message) -> None:
     try:
@@ -115,31 +108,53 @@ async def question_handler(message: Message) -> None:
         answer = await get_answer(question, pipeline)
         verbose = await get_verbose_or_default(message.chat.id)
         text = get_answer_text(answer, verbose)
-        markup = InlineKeyboardMarkup(inline_keyboard=[[
-            InlineKeyboardButton(text="👍", callback_data=f'like:{answer.id}'),
-            InlineKeyboardButton(text="👎", callback_data=f'dislike:{answer.id}')
-        ]])
+        markup = create_answer_markup(answer.id)
         await message.reply(text, reply_markup=markup)
-    except Exception as e:
+    except Exception as exception:
         verbose = await get_verbose_or_default(message.chat.id)
-        exception = ''
-        if verbose:
-            exception = str(e)
-        error_text = bot_messages['error'].format(exception=exception)
+        error_text = bot_messages['error'].format(exception=str(exception) if verbose else '')
         await message.reply(error_text)
-        raise e
 
 
-@dp.callback_query(lambda query: query.data.startswith('like:'))
-async def like_handler(query: CallbackQuery):
-    await like_answer(query.data.split(':')[1])
-    await query.answer(bot_messages['like'])
+# Создание кнопок для сообщения
+
+def create_pipeline_markup() -> InlineKeyboardMarkup:
+    return InlineKeyboardMarkup(inline_keyboard=[
+        [InlineKeyboardButton(text=name, callback_data=f'pipeline:{key}')]
+        for key, name in pipelines.items()
+    ])
 
 
-@dp.callback_query(lambda query: query.data.startswith('dislike:'))
-async def like_handler(query: CallbackQuery):
-    await dislike_answer(query.data.split(':')[1])
-    await query.answer(bot_messages['dislike'])
+def create_verbose_markup() -> InlineKeyboardMarkup:
+    return InlineKeyboardMarkup(inline_keyboard=[[
+        InlineKeyboardButton(text="✅", callback_data='verbose:true'),
+        InlineKeyboardButton(text="❌", callback_data='verbose:false'),
+    ]])
+
+
+def create_answer_markup(answer_id: str) -> InlineKeyboardMarkup:
+    return InlineKeyboardMarkup(inline_keyboard=[[
+        InlineKeyboardButton(text="👍", callback_data=f'like:{answer_id}'),
+        InlineKeyboardButton(text="👎", callback_data=f'dislike:{answer_id}')
+    ]])
+
+
+# Вспомогательные методы
+
+def get_verbose_status(verbose: bool) -> str:
+    return bot_messages['verbose-enabled'] if verbose else bot_messages['verbose-disabled']
+
+
+def get_answer_text(response: Answer, verbose: bool) -> str:
+    assurance_text = bot_messages['answer-confident'] if True else bot_messages['answer-doubtful']
+    other_text = response.get_other_inline() if verbose else ''
+    return bot_messages['answer'].format(
+        answer=response.answer,
+        class_1=response.class_1,
+        class_2=response.class_2,
+        assurance=assurance_text,
+        other=other_text
+    )
 
 
 async def main() -> None:
