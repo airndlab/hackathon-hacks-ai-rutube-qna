@@ -10,6 +10,7 @@ on:
         options:
           - bot
           - qna
+          - pipeline-faq
           - pipeline-baseline
   release:
     types:
@@ -19,10 +20,12 @@ env:
   PATH_MAP: |
     bot=bot
     qna=qna
+    pipeline-faq=pipelines/faq
     pipeline-baseline=pipelines/baseline
   IMAGE_MAP: |
     bot=rutube-qna-bot
     qna=rutube-qna
+    pipeline-faq=rutube-qna-pipeline-faq
     pipeline-baseline=rutube-qna-pipeline-baseline
 
 jobs:
