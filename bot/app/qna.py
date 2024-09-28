@@ -20,11 +20,9 @@ class Answer(BaseModel):
         return None
 
 
-async def get_answer(question: str, pipeline: Optional[str] = None) -> Answer:
+async def get_answer(question: str, pipeline: str) -> Answer:
     async with aiohttp.ClientSession() as session:
-        request = {'question': question}
-        if pipeline:
-            request['pipeline'] = pipeline
+        request = {'question': question, 'pipeline': pipeline}
         async with session.post(f'{QNA_SERVICE_URL}/api/answers', json=request) as response:
             if response.status == 200:
                 json = await response.json()

@@ -23,7 +23,8 @@ class PipelineAnswer(BaseModel):
     extra_fields: Optional[Dict[str, str]] = None
 
 
-async def get_answer(question: str, pipeline: Optional[str] = default_pipeline) -> PipelineAnswer:
+async def get_answer(question: str, pipeline: Optional[str]) -> PipelineAnswer:
+    pipeline = pipeline or default_pipeline
     match pipeline:
         case "baseline":
             return await get_answer_by_service(question, PIPELINE_BASELINE_SERVICE_URL)
