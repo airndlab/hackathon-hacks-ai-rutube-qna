@@ -1,16 +1,15 @@
-# rutube-qna
+# Сервис ответов на вопросы
 
-Rutube Q&A.
+## Конфигурация через env
 
-## Development
+Опциональные:
 
-Install:
-
-- python
-- poetry
-
-## Run
-
-### env
-
-- `PIPELINE_BASELINE_SERVICE_URL` - Pipeline Baseline service url
+- `QNA_DB_PATH` - путь до файла с бд, значение по-умолчанию `metrics.db`
+- `QNA_SERVICE_DEFAULT_PIPELINE` - по-умолчанию пайплайн,
+  значение по-умолчанию `faq_cases`
+- `PIPELINE_BASELINE_SERVICE_URL` - адрес `pipeline-baseline`,
+  значение по-умолчанию `http://pipeline-baseline:8088`
+- `PIPELINE_FAQ_SERVICE_URL` - адрес `pipeline-faq`,
+  значение по-умолчанию `http://pipeline-faq:8088`
+- `PIPELINE_FAQ_CASES_SERVICE_URL` - адрес `pipeline-faq-cases`,
+  значение по-умолчанию `http://pipeline-faq-cases:8088`

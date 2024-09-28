@@ -1,17 +1,17 @@
-# rutube-qna-bot
+# Telegram бот
 
-Rutube Q&A Bot.
+Бот для ответов на вопросы.
 
-## Development
+## Конфигурация через env
 
-Install:
+Обязательные к заполнению:
 
-- python
-- poetry
+- `BOT_TOKEN` - токен Telegram бота
+- `BOT_MESSAGES_FILE_PATH` - путь к файлу с текстами для сообщений бота
 
-## Run
+  Опциональные:
 
-### env
-
-- `BOT_TOKEN` - Telegram bot token
-- `QNA_SERVICE_URL` - Q&A servie url
+- `QNA_SERVICE_URL` - адрес `qna-service`, значение по-умолчанию `http://qna-service:8080`
+- `BOT_DB_PATH` - путь до файла с бд, значение по-умолчанию `settings.db`
+- `BOT_DEFAULT_VERBOSE` - по-умолчанию подробный режим, значение по-умолчанию `false`
+- `BOT_DEFAULT_PIPELINE` - по-умолчанию пайплайн, значение по-умолчанию `faq_cases`
