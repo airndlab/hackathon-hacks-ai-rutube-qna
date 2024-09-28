@@ -1,6 +1,7 @@
 import asyncio
 import os
 import re
+import time
 import warnings
 
 import pandas as pd
@@ -70,7 +71,7 @@ replace_dict = {
 }
 
 
-def get_answer_from_rag(question: str, df: pd.DataFrame = final_df):
+def get_answer_from_rag(question: str, basic_rag_pipeline, df: pd.DataFrame = final_df):
     """
     Функция принимает на вход вопрос, приводит его к нижнему регистру, удаляет знаки препинания,
     заменяет слова на основании словаря (если передан), ищет его через RAG pipeline,
@@ -87,6 +88,8 @@ def get_answer_from_rag(question: str, df: pd.DataFrame = final_df):
     - Tuple[str, str, str]: Ответ из БЗ, классификатор 1 уровня и классификатор 2 уровня.
                              Если ответ не найден, возвращает "Ответ не найден." и пустые строки.
     """
+    start_time = time.time()
+
     morph = pymorphy2.MorphAnalyzer()
 
     question = question.lower()
@@ -121,6 +124,9 @@ def get_answer_from_rag(question: str, df: pd.DataFrame = final_df):
         answer_text = target_answer['Ответ из БЗ']
         class_1 = target_answer['Классификатор 1 уровня']
         class_2 = target_answer['Классификатор 2 уровня']
+
+        # print(target_answer)
+
         return answer_text, class_1, class_2
     except IndexError:
         return "Ответ не найден.", "", ""

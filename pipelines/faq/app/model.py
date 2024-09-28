@@ -1,8 +1,11 @@
 import asyncio
 import os
+import re
 import warnings
 
 import pandas as pd
+import pymorphy2
+import time
 from haystack import Document
 from haystack import Pipeline
 from haystack.components.embedders import SentenceTransformersDocumentEmbedder
@@ -116,7 +119,7 @@ def get_answer_from_rag(question: str, basic_rag_pipeline, df: pd.DataFrame = df
         class_1 = target_answer['Классификатор 1 уровня']
         class_2 = target_answer['Классификатор 2 уровня']
 
-        # print(target_answer)
+        print(target_answer)
 
         return answer_text, class_1, class_2
     except IndexError:
