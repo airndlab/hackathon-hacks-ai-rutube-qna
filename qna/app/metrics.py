@@ -10,6 +10,8 @@ async def init_db() -> None:
             answer_id TEXT PRIMARY KEY,
             question TEXT,
             answer TEXT,
+            class_1 TEXT,
+            class_2 TEXT,
             answered_at DATETIME DEFAULT CURRENT_TIMESTAMP,
             feedback INTEGER DEFAULT 0
         )
@@ -17,11 +19,11 @@ async def init_db() -> None:
         await db.commit()
 
 
-async def save_answer(answer_id: str, question: str, answer: str) -> None:
+async def save_answer(answer_id: str, question: str, answer: str, class_1: str, class_2: str) -> None:
     async with aiosqlite.connect(db_path) as db:
         await db.execute(
-            "INSERT INTO answers (answer_id, question, answer) VALUES (?, ?, ?)",
-            (answer_id, question, answer)
+            "INSERT INTO answers (answer_id, question, answer, class_1, class_2) VALUES (?, ?, ?, ?, ?)",
+            (answer_id, question, answer, class_1, class_2)
         )
         await db.commit()
 

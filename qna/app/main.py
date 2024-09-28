@@ -45,11 +45,16 @@ async def ask(request: QuestionRequest) -> Answer:
     pipeline = request.pipeline
     answer_data = await get_answer(question, pipeline)
     answer_id = str(uuid.uuid4())
-    answer = answer_data.answer
-    await save_answer(answer_id, question, answer=answer)
+    await save_answer(
+        answer_id=answer_id,
+        question=question,
+        answer=answer_data.answer,
+        class_1=answer_data.class_1,
+        class_2=answer_data.class_2,
+    )
     return Answer(
         id=answer_id,
-        answer=answer,
+        answer=answer_data.answer,
         class_1=answer_data.class_1,
         class_2=answer_data.class_2,
         extra_fields=answer_data.extra_fields
