@@ -1,6 +1,7 @@
 # Пайплайн поиска по вопросам FAQ+Кейсы
 
-На модели `intfloat/e5-large-v2`.
+RAG и модель `intfloat/e5-large-v2`,
+подробнее смотрите в тетрадке [rag_faq_cases.ipynb](rag_faq_cases.ipynb).
 
 ## Конфигурация через env
 

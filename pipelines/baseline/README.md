@@ -1,6 +1,7 @@
 # Пайплайн кейсхолдера
 
-На модели `sentence-transformers/all-MiniLM-L6-v2`.
+На модели `sentence-transformers/all-MiniLM-L6-v2`,
+подробнее смотрите в тетрадке [baseline.ipynb](baseline.ipynb).
 
 ## Конфигурация через env
 
