@@ -13,8 +13,8 @@
 #  limitations under the License.
 
 import logging
-import sys
 
+import sys
 import uvicorn
 from fastapi import FastAPI
 from pydantic import BaseModel
@@ -24,9 +24,7 @@ from app.model import get_answer, Answer
 logging.basicConfig(
     level=logging.INFO,
     format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
-    handlers=[
-        logging.StreamHandler(sys.stdout)
-    ]
+    handlers=[logging.StreamHandler(sys.stdout)]
 )
 
 app = FastAPI()
@@ -43,8 +41,7 @@ class QuestionRequest(BaseModel):
 
 @app.post("/api/answers", response_model=Answer)
 async def ask(request: QuestionRequest) -> Answer:
-    question = request.question
-    return await get_answer(question)
+    return await get_answer(request.question)
 
 
 if __name__ == "__main__":
