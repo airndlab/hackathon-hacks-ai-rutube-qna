@@ -34,7 +34,7 @@ async def command_start_handler(message: Message) -> None:
 
 
 async def get_pipelines_text():
-    pipelines_list = "\n\n".join([f"- `/pipeline {name}`: {description}" for name, description in pipelines.items()])
+    pipelines_list = "\n\n".join([f"- /pipeline {name}: {description}" for name, description in pipelines.items()])
     response = f"Доступные пайплайны:\n\n{pipelines_list}"
     return response
 
@@ -51,7 +51,7 @@ async def command_pipelines_handler(message: Message):
 async def command_pipelines_handler(message: Message):
     args = message.text.split()
     if len(args) != 2:
-        text = f"Пожалуйста, укажите название пайплайна.\n\nПример: `/pipeline {default_pipeline}`"
+        text = f"Пожалуйста, укажите название пайплайна.\n\nПример: /pipeline {default_pipeline}"
         await message.reply(text)
         return
     pipeline_name = args[1]
