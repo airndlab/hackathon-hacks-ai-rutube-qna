@@ -21,8 +21,7 @@ logging.basicConfig(
     ]
 )
 
-BOT_MESSAGES_FILE_PATH = os.getenv('BOT_MESSAGES_FILE_PATH',
-                                   'C:/Users/grig/github/airndlab/hackathon-hacks-ai-rutube-qna/config/bot-messages.yml')
+BOT_MESSAGES_FILE_PATH = os.getenv('BOT_MESSAGES_FILE_PATH')
 with open(BOT_MESSAGES_FILE_PATH, 'r', encoding='utf-8') as file:
     messages = yaml.safe_load(file)
 
