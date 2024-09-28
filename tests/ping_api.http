@@ -1,0 +1,19 @@
+### Локально
+POST http://localhost:8080/api/answers
+Accept: application/json
+Content-Type: application/json
+
+{
+  "question": "Как сменить пароль?"
+}
+
+### Стенд
+POST http://95.174.94.144:8080/api/answers
+Accept: application/json
+Content-Type: application/json
+
+{
+  "question": "Как сменить пароль?"
+}
+
+###
