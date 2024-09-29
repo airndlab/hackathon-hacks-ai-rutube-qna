@@ -13,7 +13,7 @@
 
 - [bot](bot) - Telegram бот
 - [qna-service](qna) - Сервис ответов на вопросы
-- Пайплайны:
+- [Пайплайны](pipelines/README.md):
     - [pipeline-rag-ranker](pipelines/rag_ranker) - Пайплайн поиска по вопросам FAQ + Кейсам с ранжированием
     - [pipeline-faq](pipelines/faq) - Пайплайн поиска по вопросам FAQ
     - [pipeline-faq-cases](pipelines/faq_cases) - Пайплайн поиска по вопросам FAQ + Кейсам
