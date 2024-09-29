@@ -7,7 +7,7 @@ authors = ["AI RnD Lab Authors"]
 readme = "README.md"
 
 [tool.poetry.dependencies]
-python = "^3.11"
+python = "^3.10"
 haystack-ai = "^2.5.1"
 datasets = ">=2.6.1"
 sentence-transformers = ">=3.0.0"
