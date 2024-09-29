@@ -11,9 +11,12 @@
 #  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
+import logging
 import os
 
 import aiosqlite
+
+logger = logging.getLogger(__name__)
 
 QNA_DB_PATH = os.getenv('QNA_DB_PATH', 'metrics.db')
 
@@ -44,6 +47,10 @@ async def save_answer(answer_id: str, question: str, pipeline: str, answer: str,
             VALUES (?, ?, ?, ?, ?, ?)
         ''', (answer_id, question, pipeline, answer, class_1, class_2))
         await db.commit()
+        logger.info(
+            f'saved answer: answer_id="{answer_id}" question="{question}" pipeline="{pipeline}" '
+            f'answer="{answer}" class_1="{class_1}" class_2="{class_2}"'
+        )
 
 
 # Проставить фидбек
@@ -55,3 +62,4 @@ async def set_feedback(answer_id: str, feedback: int) -> None:
             WHERE answer_id = ?
         ''', (feedback, answer_id))
         await db.commit()
+        logger.info(f'set feedback: answer_id="{answer_id}" feedback="{feedback}"')
