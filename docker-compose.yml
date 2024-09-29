@@ -2,7 +2,7 @@ name: rutube-qna
 
 services:
   pipeline-rag-ranker:
-    image: airndlab/rutube-qna-pipeline-rag-ranker:2024.09.29-06-35
+    image: airndlab/rutube-qna-pipeline-rag-ranker:2024.09.29-07-26
     ports:
       - 8083:8080
     volumes:
