@@ -54,7 +54,7 @@ embed_model = "intfloat/e5-large-v2"
 doc_embedder = SentenceTransformersDocumentEmbedder(
     model=embed_model,
     device=device,
-    model_kwargs={"max_length": 512, "do_truncate": True},
+    # model_kwargs={"max_length": 512, "do_truncate": True},
 )
 
 doc_embedder.warm_up()
@@ -68,7 +68,7 @@ document_store.write_documents(list(unique_docs))
 text_embedder = SentenceTransformersTextEmbedder(
     model=embed_model,
     device=device,
-    model_kwargs={"max_length": 512}
+    # model_kwargs={"max_length": 512}
 )
 
 retriever = InMemoryEmbeddingRetriever(document_store, top_k=50)
