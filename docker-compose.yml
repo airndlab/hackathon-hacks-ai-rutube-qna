@@ -63,7 +63,7 @@ services:
       - PIPELINE_RAG_RANKER_SERVICE_URL=http://pipeline-rag-ranker:8080
 
   bot:
-    image: airndlab/rutube-qna-bot:2024.09.29-05-44
+    image: airndlab/rutube-qna-bot:2024.09.29-05-48
     depends_on:
       - qna-service
     volumes:
