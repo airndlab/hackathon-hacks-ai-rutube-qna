@@ -46,7 +46,7 @@ services:
       - KNOWLEDGE_BASE_FILE_PATH=/data/knowledge_base.xlsx
 
   qna-service:
-    image: airndlab/rutube-qna:2024.09.29-04-30
+    image: airndlab/rutube-qna:2024.09.29-05-43
     ports:
       - 8080:8080
     depends_on:
@@ -63,7 +63,7 @@ services:
       - PIPELINE_RAG_RANKER_SERVICE_URL=http://pipeline-rag-ranker:8080
 
   bot:
-    image: airndlab/rutube-qna-bot:2024.09.28-22-37
+    image: airndlab/rutube-qna-bot:2024.09.29-05-44
     depends_on:
       - qna-service
     volumes:
