@@ -21,13 +21,14 @@ BOT_DB_PATH = os.getenv('BOT_DB_PATH', 'settings.db')
 
 # Получение значений переменных окружения с установленными значениями по умолчанию
 DEFAULT_VERBOSE = os.getenv('BOT_DEFAULT_VERBOSE', 'false').lower() in ('true', '1', 't')
-DEFAULT_PIPELINE = os.getenv('BOT_DEFAULT_PIPELINE', 'faq_cases')
+DEFAULT_PIPELINE = os.getenv('BOT_DEFAULT_PIPELINE', 'rag_ranker')
 
 # Словарь с возможными вариантами пайплайнов
 pipelines = {
     "baseline": "Вариант кейсхолдера",
     "faq": "Поиск по вопросам FAQ",
-    "faq_cases": "Поиск по вопросам FAQ+Кейсы"
+    "faq_cases": "Поиск по вопросам FAQ+Кейсы",
+    "rag_ranker": "Поиск по вопросам FAQ+Кейсы с ранжированием",
 }
 
 
