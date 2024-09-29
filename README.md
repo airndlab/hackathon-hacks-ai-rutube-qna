@@ -2,6 +2,7 @@
 
 [![Docker Image Version (latest semver)](https://img.shields.io/docker/v/airndlab/rutube-qna-bot?label=bot)](https://hub.docker.com/r/airndlab/rutube-qna-bot)
 [![Docker Image Version (latest semver)](https://img.shields.io/docker/v/airndlab/rutube-qna?label=qna-service)](https://hub.docker.com/r/airndlab/rutube-qna)
+[![Docker Image Version (latest semver)](https://img.shields.io/docker/v/airndlab/rutube-qna-pipeline-rag-ranker?label=pipeline-rag-ranker)](https://hub.docker.com/r/airndlab/rutube-qna-pipeline-rag-ranker)
 [![Docker Image Version (latest semver)](https://img.shields.io/docker/v/airndlab/rutube-qna-pipeline-faq?label=pipeline-faq)](https://hub.docker.com/r/airndlab/rutube-qna-pipeline-faq)
 [![Docker Image Version (latest semver)](https://img.shields.io/docker/v/airndlab/rutube-qna-pipeline-faq-cases?label=pipeline-faq-cases)](https://hub.docker.com/r/airndlab/rutube-qna-pipeline-faq-cases)
 [![Docker Image Version (latest semver)](https://img.shields.io/docker/v/airndlab/rutube-qna-pipeline-baseline?label=pipeline-baseline)](https://hub.docker.com/r/airndlab/rutube-qna-pipeline-baseline)
@@ -13,6 +14,7 @@
 - [bot](bot) - Telegram бот
 - [qna-service](qna) - Сервис ответов на вопросы
 - Пайплайны:
+    - [pipeline-rag-ranker](pipelines/rag_ranker) - Пайплайн поиска по вопросам FAQ + Кейсам с ранжированием
     - [pipeline-faq](pipelines/faq) - Пайплайн поиска по вопросам FAQ
     - [pipeline-faq-cases](pipelines/faq_cases) - Пайплайн поиска по вопросам FAQ + Кейсам
     - [pipeline-baseline](pipelines/baseline) - Пайплайн кейсхолдеров

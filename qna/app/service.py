@@ -18,12 +18,13 @@ from typing import Optional, Dict
 import aiohttp
 from pydantic import BaseModel
 
-QNA_SERVICE_DEFAULT_PIPELINE = os.getenv('QNA_SERVICE_DEFAULT_PIPELINE', 'faq_cases')
+QNA_SERVICE_DEFAULT_PIPELINE = os.getenv('QNA_SERVICE_DEFAULT_PIPELINE', 'rag_ranker')
 
 SERVICE_URLS = {
     "baseline": os.getenv('PIPELINE_BASELINE_SERVICE_URL', 'http://pipeline-baseline:8088'),
     "faq": os.getenv('PIPELINE_FAQ_SERVICE_URL', 'http://pipeline-faq:8088'),
     "faq_cases": os.getenv('PIPELINE_FAQ_CASES_SERVICE_URL', 'http://pipeline-faq-cases:8088'),
+    "rag_ranker": os.getenv('PIPELINE_RAG_RANKER_SERVICE_URL', 'http://pipeline-rag-ranker:8088'),
 }
 
 

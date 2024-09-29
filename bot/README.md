@@ -14,4 +14,4 @@
 - `QNA_SERVICE_URL` - адрес `qna-service`, значение по-умолчанию `http://qna-service:8080`
 - `BOT_DB_PATH` - путь до файла с бд, значение по-умолчанию `settings.db`
 - `BOT_DEFAULT_VERBOSE` - по-умолчанию подробный режим, значение по-умолчанию `false`
-- `BOT_DEFAULT_PIPELINE` - по-умолчанию пайплайн, значение по-умолчанию `faq_cases`
+- `BOT_DEFAULT_PIPELINE` - по-умолчанию пайплайн, значение по-умолчанию `rag_ranker`

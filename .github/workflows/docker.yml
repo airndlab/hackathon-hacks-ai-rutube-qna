@@ -10,6 +10,7 @@ on:
         options:
           - bot
           - qna
+          - pipeline-rag-ranker
           - pipeline-faq
           - pipeline-faq-cases
           - pipeline-baseline
@@ -21,12 +22,14 @@ env:
   PATH_MAP: |
     bot=bot
     qna=qna
+    pipeline-rag-ranker=pipelines/rag_ranker
     pipeline-faq=pipelines/faq
     pipeline-faq-cases=pipelines/faq_cases
     pipeline-baseline=pipelines/baseline
   IMAGE_MAP: |
     bot=rutube-qna-bot
     qna=rutube-qna
+    pipeline-rag-ranker=rutube-qna-pipeline-rag-ranker
     pipeline-faq=rutube-qna-pipeline-faq
     pipeline-faq-cases=rutube-qna-pipeline-faq-cases
     pipeline-baseline=rutube-qna-pipeline-baseline
