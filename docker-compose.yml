@@ -8,6 +8,7 @@ services:
     volumes:
       - ./data:/data
       - ./config:/config
+      - ./models:/models
     environment:
       - KNOWLEDGE_BASE_FILE_PATH=/data/knowledge_base.xlsx
       - CASES_FILE_PATH=/data/cases.xlsx

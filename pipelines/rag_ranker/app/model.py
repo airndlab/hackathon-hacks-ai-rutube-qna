@@ -153,13 +153,13 @@ def classify_question(
     return predicted_label_text[0]
 
 
-model_path_1 = "model_1/classifier_1.pkl"
-encoder_path_1 = "model_1/label_encoder_1.pkl"
-vectorizer_path_1 = "model_1/vectorizer_1.pkl"
+model_path_1 = "/models/model_1/classifier_1.pkl"
+encoder_path_1 = "/models/model_1/label_encoder_1.pkl"
+vectorizer_path_1 = "/models/model_1/vectorizer_1.pkl"
 
-model_path_2 = "model_2/classifier_2.pkl"
-encoder_path_2 = "model_2/label_encoder_2.pkl"
-vectorizer_path_2 = "model_2/vectorizer_2.pkl"
+model_path_2 = "/models/model_2/classifier_2.pkl"
+encoder_path_2 = "/models/model_2/label_encoder_2.pkl"
+vectorizer_path_2 = "/models/model_2/vectorizer_2.pkl"
 
 load_model_and_files('model_1', model_path_1, encoder_path_1, vectorizer_path_1)
 load_model_and_files('model_2', model_path_2, encoder_path_2, vectorizer_path_2)
