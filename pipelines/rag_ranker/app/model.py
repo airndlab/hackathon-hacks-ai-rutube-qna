@@ -1,5 +1,6 @@
 import asyncio
 import json
+import logging
 import os
 import re
 
@@ -18,6 +19,8 @@ from haystack.utils import ComponentDevice
 from nltk.corpus import stopwords
 from nltk.stem import WordNetLemmatizer
 from pydantic import BaseModel
+
+logger = logging.getLogger(__name__)
 
 KNOWLEDGE_BASE_FILE_PATH = os.getenv('KNOWLEDGE_BASE_FILE_PATH')
 CASES_FILE_PATH = os.getenv('CASES_FILE_PATH')
@@ -261,6 +264,8 @@ async def get_answer(question: str) -> Answer:
         question,
         basic_rag_pipeline,
     )
+
+    logger.info(f'question="{question}" answer="{answer_text}" class_1="{class_1}" class_2="{class_2}"')
 
     return Answer(
         answer=answer_text,
