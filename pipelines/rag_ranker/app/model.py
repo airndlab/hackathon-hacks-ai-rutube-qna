@@ -98,6 +98,7 @@ with open(REPLACEMENTS_FILE_PATH, 'r', encoding='utf-8') as file:
     replace_dict = json.load(file)
 
 nltk.download('punkt')
+nltk.download('punkt_tab')
 nltk.download('wordnet')
 nltk.download('stopwords')
 
