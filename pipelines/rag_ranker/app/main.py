@@ -1,6 +1,6 @@
 import logging
-
 import sys
+
 import uvicorn
 from fastapi import FastAPI
 from pydantic import BaseModel
@@ -17,8 +17,8 @@ app = FastAPI()
 
 
 @app.get("/")
-async def root():
-    return {"status": "UP"}
+def index():
+    return {"text": "Интеллектуальный помощник оператора службы поддержки."}
 
 
 class QuestionRequest(BaseModel):
@@ -27,6 +27,11 @@ class QuestionRequest(BaseModel):
 
 @app.post("/api/answers", response_model=Answer)
 async def ask(request: QuestionRequest) -> Answer:
+    return await get_answer(request.question)
+
+
+@app.post("/predict")
+async def predict(request: QuestionRequest) -> Answer:
     return await get_answer(request.question)
 
 
