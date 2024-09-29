@@ -9,7 +9,7 @@
 - `BOT_TOKEN` - токен Telegram бота
 - `BOT_MESSAGES_FILE_PATH` - путь к файлу с текстами для сообщений бота
 
-  Опциональные:
+Опциональные:
 
 - `QNA_SERVICE_URL` - адрес `qna-service`, значение по-умолчанию `http://qna-service:8080`
 - `BOT_DB_PATH` - путь до файла с бд, значение по-умолчанию `settings.db`

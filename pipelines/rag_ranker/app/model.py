@@ -20,6 +20,7 @@ from pydantic import BaseModel
 # Пути к файлам базы знаний и кейсов
 KNOWLEDGE_BASE_FILE_PATH = os.getenv('KNOWLEDGE_BASE_FILE_PATH')
 CASES_FILE_PATH = os.getenv('CASES_FILE_PATH')
+THRESHOLD = float(os.getenv('THRESHOLD', '0.05'))
 
 # Чтение данных из файлов Excel
 df_base = pd.read_excel(KNOWLEDGE_BASE_FILE_PATH)
@@ -178,7 +179,7 @@ def preprocess_text(text):
 
 
 # Функция получения ответа из RAG пайплайна
-def get_answer_from_rag(question: str, rag_pipeline, threshold: float = 0.25, df: pd.DataFrame = final_df):
+def get_answer_from_rag(question: str, rag_pipeline, threshold: float = THRESHOLD, df: pd.DataFrame = final_df):
     question = preprocess_text(question)
     response = rag_pipeline.run({"text_embedder": {"text": question}, "ranker": {"query": question}})
     document = response['ranker']['documents'][0]
