@@ -17,6 +17,7 @@ nltk = "^3.9.1"
 fastapi = "^0.115.0"
 uvicorn = "^0.31.0"
 openpyxl = "^3.1.5"
+transformers = {extras = ["sentencepiece", "torch"], version = "^4.45.1"}
 
 
 [build-system]
