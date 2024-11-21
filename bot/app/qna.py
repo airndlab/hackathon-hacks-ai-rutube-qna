@@ -24,12 +24,12 @@ QNA_SERVICE_URL = os.getenv('QNA_SERVICE_URL', 'http://qna-service:8080')
 
 # Модель ответа
 class Answer(BaseModel):
-    id: str
-    answer: str
-    class_1: str
-    class_2: str
-    score: float
-    source: List
+    id: Optional[str]
+    answer: Optional[str]
+    class_1: Optional[str]
+    class_2: Optional[str]
+    score: Optional[float]
+    source: Optional[List]
     extra_fields: Optional[Dict[str, str]] = None  # Дополнительные поля
 
     # Метод для получения строкового представления дополнительных полей
