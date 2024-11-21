@@ -13,7 +13,7 @@
 #  limitations under the License.
 
 import os
-from typing import Optional, Dict
+from typing import Optional, Dict, List
 
 import aiohttp
 from pydantic import BaseModel
@@ -28,6 +28,8 @@ class Answer(BaseModel):
     answer: str
     class_1: str
     class_2: str
+    score: float
+    source: List
     extra_fields: Optional[Dict[str, str]] = None  # Дополнительные поля
 
     # Метод для получения строкового представления дополнительных полей

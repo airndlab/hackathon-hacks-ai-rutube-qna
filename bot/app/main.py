@@ -34,8 +34,11 @@ logging.basicConfig(
     format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
     handlers=[logging.StreamHandler(sys.stdout)]
 )
+logger = logging.getLogger(__name__)
 
 NO_ANSWER = "Ответ не найден."
+
+SCORE_THRESHOLD = float(os.getenv('SCORE_THRESHOLD', '0.75'))
 
 # Загрузка сообщений бота из файла
 BOT_MESSAGES_FILE_PATH = os.getenv('BOT_MESSAGES_FILE_PATH')
@@ -108,6 +111,11 @@ async def question_handler(message: Message) -> None:
         question = message.text
         pipeline = await get_pipeline_or_default(message.chat.id)
         answer_data = await get_answer(question, pipeline)
+        logger.info(
+            f'question={question} answer="{answer_data.answer}" '
+            f'user_id="{message.from_user.id}" user_id="{message.from_user.username}" '
+            f'first_name="{message.from_user.first_name}" last_name="{message.from_user.last_name}"'
+        )
         if answer_data.answer == NO_ANSWER:
             await message.reply(bot_messages['answer-no'])
             return
@@ -151,15 +159,32 @@ def get_verbose_status(verbose: bool) -> str:
 
 
 def get_answer_text(response: Answer, verbose: bool) -> str:
-    assurance_text = bot_messages['answer-confident'] if True else bot_messages['answer-doubtful']
+    confidence = response.score >= SCORE_THRESHOLD
+    assurance_text = bot_messages['answer-confident'] if confidence else bot_messages['answer-doubtful']
+    docs_text = get_docs_text(response.source)
     other_text = response.get_other_inline() if verbose else ''
     return bot_messages['answer'].format(
         answer=response.answer,
         class_1=response.class_1,
         class_2=response.class_2,
         assurance=assurance_text,
+        docs=docs_text,
         other=other_text
     )
+
+
+def get_docs_text(source):
+    unique_types = set()
+    agreement_texts = []
+    for item in source:
+        if item['type'] == 'Agreement':
+            agreement_texts.append(f"{item['type']} {item['text']}")
+        else:
+            unique_types.add(item['type'])
+    result = '\n'.join(unique_types)
+    if agreement_texts:
+        result = '\n'.join(agreement_texts) + '\n' + result
+    return result
 
 
 async def main() -> None:
