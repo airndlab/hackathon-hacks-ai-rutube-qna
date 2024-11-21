@@ -3,6 +3,13 @@ name: rutube-qna
 services:
   pipeline-rag-ranker:
     image: airndlab/rutube-qna-pipeline-rag-ranker:2024.11.21-10-30
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              device_ids: [ '0' ]
+              capabilities: [ gpu ]
     ports:
       - 8093:8080
     volumes:
