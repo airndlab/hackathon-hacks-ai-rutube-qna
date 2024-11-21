@@ -1,0 +1,15 @@
+name: rutube-qna
+
+services:
+  pipeline-rag-ranker:
+    image: airndlab/rutube-qna-pipeline-rag-ranker:2024.11.21-10-30
+    ports:
+      - 8093:8080
+    volumes:
+      - ./data:/data
+      - ./config:/config
+      - ./models:/models
+    environment:
+      - KNOWLEDGE_BASE_FILE_PATH=/data/knowledge_base.xlsx
+      - CASES_FILE_PATH=/data/cases.xlsx
+      - REPLACEMENTS_FILE_PATH=/config/replacements.json
