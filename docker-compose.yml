@@ -5,8 +5,6 @@ services:
     image: airndlab/rutube-qna:2024.11.21-10-31
     ports:
       - 8080
-    depends_on:
-      - pipeline-rag-ranker
     volumes:
       - qna_data:/data
     environment:
