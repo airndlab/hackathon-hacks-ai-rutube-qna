@@ -19,9 +19,7 @@ services:
     ports:
       - 8080
     depends_on:
-      - pipeline-faq
-      - pipeline-faq-cases
-      - pipeline-baseline
+      - pipeline-rag-ranker
     volumes:
       - qna_data:/data
     environment:
